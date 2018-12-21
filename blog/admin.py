@@ -36,9 +36,9 @@ class TagAdmin(BaseOwnerAdmin):
 @admin.register(Post, site=custom_site)
 class PostAdmin(BaseOwnerAdmin):
     form = PostAdminForm
-    list_display = ['title', 'categories', 'status', 'owner', 'created_time']
+    list_display = ['title', 'category', 'status', 'owner', 'created_time']
     list_display_links = []
-    search_fields = ('title', 'categories__name')
+    search_fields = ('title', 'category__name')
     save_on_top = True
 
     actions_on_top = True
@@ -50,7 +50,7 @@ class PostAdmin(BaseOwnerAdmin):
         ('基础配置', {
             'description': '基础配置描述',
             'fields': (
-                ('title', 'categories'),
+                ('title', 'category'),
                 'status'
             )
         }),
@@ -62,10 +62,10 @@ class PostAdmin(BaseOwnerAdmin):
         }),
         ('额外信息', {
             'classes': ('wide',),
-            'fields': ('tags',)
+            'fields': ('tag',)
         })
     )
-    filter_vertical = ('tags',)
+    filter_vertical = ('tag',)
 
     def operator(self, obj):
         return format_html(

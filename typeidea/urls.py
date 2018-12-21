@@ -17,8 +17,13 @@ from django.conf.urls import url
 from django.contrib import admin
 
 from .custom_site import custom_site
+from blog.views import post_detail, post_list
 
 urlpatterns = [
+    url(r'^$', post_list, name='index'),
+    url(r'^tag/(?P<tag_id>\d+)/$', post_list, name='tag'),
+    url(r'^category/(?P<category_id>\d+)/$', post_list, name='category'),
+    url(r'^post/(?P<post_id>\d+)/$', post_detail, name='post'),
     url(r'^admin/', admin.site.urls),
     url(r'^cus_admin/', custom_site.urls)
 ]

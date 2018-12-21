@@ -8,9 +8,10 @@ from blog.models import Category
 class TestCategory(TestCase):
     def setUp(self):
         user = User.objects.create_user('erudev', 'erudev@qq.com', 'password')
-        for i in range(10):
-            cate_name = 'cate_%s' % i
-            Category.objects.create(name=cate_name, owner=user)
+        Category.objects.bulk_create([
+            Category(name='cate_%s'% i, owner=user)
+            for i in range(10)]
+        )
 
 
     @override_settings(DEBUG=True)

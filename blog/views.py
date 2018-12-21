@@ -1,11 +1,17 @@
-from django.http import HttpResponse
+from django.http import request
 from django.shortcuts import render
+from django.core.paginator import Paginator, EmptyPage
 
 from blog.models import Post, Tag, Category
 
 
 def post_list(request, category_id=None, tag_id=None):
+    try:
+        cur_page = request.GET.get('page', 1)
+    except TypeError:
+        cur_page = 1
     queryset = Post.objects.all()
+    page_size = 5
     if tag_id:
         try:
             tag = Tag.objects.get(pk=tag_id)
@@ -16,7 +22,13 @@ def post_list(request, category_id=None, tag_id=None):
     elif category_id:
         queryset = queryset.filter(category_id=category_id)
 
-    context = {'posts': queryset}
+    paginator = Paginator(queryset, page_size)
+    try:
+        posts = paginator.page(cur_page)
+    except EmptyPage:
+        posts = paginator.page(paginator.num_pages)
+
+    context = {'posts': posts}
     return render(request, 'blog/post.html', context)
 
 

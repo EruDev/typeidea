@@ -5,4 +5,11 @@
         desc: {{ post.desc }}
         <hr>
     {% endfor %}
+    Page {{ posts.number }} of {{ posts.paginator.num_pages }}
+    {% if posts.has_previous %}
+    <a href='?page={{ posts.number|add:'-1'}}'>上一页</a>
+    {% endif %}
+    {% if posts.has_next %}
+    <a href='?page={{ posts.number|add:'1' }}'>下一页</a>
+    {% endif %}
 </ul>

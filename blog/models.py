@@ -53,6 +53,7 @@ class Post(models.Model):
         (STATUS_DRAFT, '草稿'),
     )
     title = models.CharField(max_length=200, verbose_name='标题')
+    desc = models.CharField(max_length=1024, verbose_name='摘要', blank=True)
     owner = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name='作者')
     tags = models.ManyToManyField(Tag, verbose_name='标签')
     categories = models.ForeignKey(Category, on_delete=models.CASCADE, verbose_name='分类')

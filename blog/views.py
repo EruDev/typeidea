@@ -39,13 +39,11 @@ def post_list(request, category_id=None, tag_id=None):
             cates.append(cate)
     recently_comments = Comment.objects.filter(status=1)[:10]
     recently_sidebars = SideBar.objects.filter(status=1)
-    recently_categories = Post.objects.filter(status=1)[:10]
 
     context = {
         'posts': posts,
         'nav_cates': nav_cates,
         'cates': cates,
-        'recently_categories': recently_categories,
         'recently_sidebars': recently_sidebars,
         'recently_comments': recently_comments
     }

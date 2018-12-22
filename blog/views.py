@@ -7,6 +7,28 @@ from config.models import SideBar
 from comment.models import Comment
 
 
+def get_common_context():
+    categories = Category.objects.filter(status=1)
+    nav_cates = []
+    cates = []
+    for cate in categories:
+        if cate.is_nav:
+            nav_cates.append(cate)
+        else:
+            cates.append(cate)
+    recently_comments = Comment.objects.filter(status=1)[:10]
+    recently_sidebars = SideBar.objects.filter(status=2)
+
+    context = {
+        'nav_cates': nav_cates,
+        'cates': cates,
+        'recently_sidebars': recently_sidebars,
+        'recently_comments': recently_comments
+    }
+    return context
+
+
+
 def post_list(request, category_id=None, tag_id=None):
     try:
         cur_page = request.GET.get('page', 1)
@@ -29,28 +51,15 @@ def post_list(request, category_id=None, tag_id=None):
         posts = paginator.page(cur_page)
     except EmptyPage:
         posts = paginator.page(paginator.num_pages)
-    categories = Category.objects.filter(status=1)
-    nav_cates = []
-    cates = []
-    for cate in categories:
-        if cate.is_nav:
-            nav_cates.append(cate)
-        else:
-            cates.append(cate)
-    recently_comments = Comment.objects.filter(status=1)[:10]
-    recently_sidebars = SideBar.objects.filter(status=1)
 
-    context = {
-        'posts': posts,
-        'nav_cates': nav_cates,
-        'cates': cates,
-        'recently_sidebars': recently_sidebars,
-        'recently_comments': recently_comments
-    }
+    context = get_common_context()
+    context.update({'posts': posts})
+
     return render(request, 'blog/post.html', context)
 
 
 def post_detail(request, post_id=None):
     queryset = Post.objects.get(id=post_id)
-    context = {'post': queryset}
+    context = get_common_context()
+    context.update({'post': queryset})
     return render(request, 'blog/detail.html', context)

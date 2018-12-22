@@ -1,6 +1,13 @@
-<a href="{% url 'index' %}">首页</a>
+{% extends './base.html' %}
+
+{% block title %}
+详情页
+{% endblock %}
+
+{% block main %}
 <ul>
-    title:{{ post.title }} <br>
-    desc:{{ post.desc }}
-    <hr>
+    <li>{{ post.owner.username }}</li>
+    <li>{{ post.title }}</li>
+    <li>{{ post.category }}</li>
 </ul>
+{% endblock %}

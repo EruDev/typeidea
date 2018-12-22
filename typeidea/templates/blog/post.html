@@ -1,15 +1,29 @@
 <h1>list</h1>
 <ul>
-    {% for post in posts %}
-        title: <a href="{% url 'post' post.id %}">{{ post.title }}</a><br>
-        desc: {{ post.desc }}
-        <hr>
+    {% for nav_cate in nav_cates %}
+        <a href="{% url 'category' nav_cate.id %}">{{ nav_cate.name }}</a>
     {% endfor %}
-    Page {{ posts.number }} of {{ posts.paginator.num_pages }}
-    {% if posts.has_previous %}
-    <a href='?page={{ posts.number|add:'-1'}}'>上一页</a>
+    <br>
+
+    {% if posts %}
+        {% for post in posts %}
+            title: <a href="{% url 'post' post.id %}">{{ post.title }}</a><br>
+            desc: {{ post.desc }}
+            <hr>
+        {% endfor %}
+        Page {{ posts.number }} of {{ posts.paginator.num_pages }}
+        {% if posts.has_previous %}
+        <a href='?page={{ posts.number|add:'-1'}}'>上一页</a>
+        {% endif %}
+        {% if posts.has_next %}
+        <a href='?page={{ posts.number|add:'1' }}'>下一页</a>
+        {% endif %}
+    {% else %}
+        Empty
     {% endif %}
-    {% if posts.has_next %}
-    <a href='?page={{ posts.number|add:'1' }}'>下一页</a>
-    {% endif %}
+    <hr>
+    {% for cate in cates %}
+        <a href="{% url 'category' cate.id %}">{{ cate.name }}</a>
+    {% endfor %}
+
 </ul>

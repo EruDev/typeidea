@@ -1,6 +1,10 @@
 {% extends "./base.html" %}
 
 {% block content %}
+    {% if query %}
+        <p>您搜索的关键字:{{ query }} 的结果如下</p>
+        <hr>
+    {% endif %}
     {% if posts %}
         {% for post in posts %}
 			<div class="post-element">

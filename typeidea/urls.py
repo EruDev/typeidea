@@ -18,6 +18,7 @@ from django.contrib import admin
 
 from .custom_site import custom_site
 from blog.views import PostDetailView, IndexView, TagView, CategoryView
+from config.views import LinkView
 
 urlpatterns = [
     url(r'^$', IndexView.as_view(), name='index'),
@@ -25,5 +26,6 @@ urlpatterns = [
     url(r'^category/(?P<category_id>\d+)/$', CategoryView.as_view(), name='category'),
     url(r'^post/(?P<post_id>\d+)/$', PostDetailView.as_view(), name='detail'),
     url(r'^admin/', admin.site.urls),
+    url(r'^links/', LinkView.as_view(), name='link'),
     url(r'^cus_admin/', custom_site.urls)
 ]

@@ -1,5 +1,6 @@
 from django.views.generic import ListView, DetailView
 from django.shortcuts import get_object_or_404
+from django.conf import settings
 
 from config.models import SideBar
 from .models import Post, Category, Tag

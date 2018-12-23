@@ -1,65 +1,81 @@
-from django.http import request
-from django.shortcuts import render
-from django.core.paginator import Paginator, EmptyPage
+from django.views.generic import ListView, DetailView
+from django.shortcuts import get_object_or_404
 
-from blog.models import Post, Tag, Category
 from config.models import SideBar
-from comment.models import Comment
+from .models import Post, Category, Tag
 
 
-def get_common_context():
-    categories = Category.objects.filter(status=1)
-    nav_cates = []
-    cates = []
-    for cate in categories:
-        if cate.is_nav:
-            nav_cates.append(cate)
-        else:
-            cates.append(cate)
-    recently_comments = Comment.objects.filter(status=1)[:10]
-    recently_sidebars = SideBar.objects.filter(status=2)
+class CommonViewMixin:
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context.update({
+            'sidebars': self.get_sidebars(),
+        })
+        context.update(self.get_navs())
+        return context
 
-    context = {
-        'nav_cates': nav_cates,
-        'cates': cates,
-        'recently_sidebars': recently_sidebars,
-        'recently_comments': recently_comments
-    }
-    return context
+    def get_sidebars(self):
+        return SideBar.objects.filter(status=SideBar.STATUS_SHOW)
 
+    def get_navs(self):
+        categories = Category.objects.filter(status=Category.STATUS_NORMAL)
+        nav_categories = []
+        normal_categories = []
+        for cate in categories:
+            if cate.is_nav:
+                nav_categories.append(cate)
+            else:
+                normal_categories.append(cate)
 
-
-def post_list(request, category_id=None, tag_id=None):
-    try:
-        cur_page = request.GET.get('page', 1)
-    except TypeError:
-        cur_page = 1
-    queryset = Post.objects.all()
-    page_size = 5
-    if tag_id:
-        try:
-            tag = Tag.objects.get(pk=tag_id)
-        except Tag.DoesNotExist:
-            queryset = []
-        else:
-            queryset = tag.posts.all()
-    elif category_id:
-        queryset = queryset.filter(category_id=category_id)
-
-    paginator = Paginator(queryset, page_size)
-    try:
-        posts = paginator.page(cur_page)
-    except EmptyPage:
-        posts = paginator.page(paginator.num_pages)
-
-    context = get_common_context()
-    context.update({'posts': posts})
-
-    return render(request, 'blog/post.html', context)
+        return {
+            'navs': nav_categories,
+            'categories': normal_categories,
+        }
 
 
-def post_detail(request, post_id=None):
-    queryset = Post.objects.get(id=post_id)
-    context = get_common_context()
-    context.update({'post': queryset})
-    return render(request, 'blog/detail.html', context)
+class IndexView(CommonViewMixin, ListView):
+    queryset = Post.objects.filter(status=Post.STATUS_NORMAL)
+    paginate_by = 5
+    context_object_name = 'post_list'
+    template_name = 'blog/list.html'
+
+
+class CategoryView(IndexView):
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        category_id = self.kwargs.get('category_id')
+        category = get_object_or_404(Category, pk=category_id)
+        context.update({
+            'category': category,
+        })
+        return context
+
+    def get_queryset(self):
+        """ 重写querset，根据分类过滤 """
+        queryset = super().get_queryset()
+        category_id = self.kwargs.get('category_id')
+        return queryset.filter(category_id=category_id)
+
+
+class TagView(IndexView):
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        tag_id = self.kwargs.get('tag_id')
+        tag = get_object_or_404(Tag, pk=tag_id)
+        context.update({
+            'tag': tag,
+        })
+        return context
+
+    def get_queryset(self):
+        """ 重写querset，根据标签过滤 """
+        queryset = super().get_queryset()
+        tag_id = self.kwargs.get('tag_id')
+        return queryset.filter(tag__id=tag_id)
+
+
+class PostDetailView(CommonViewMixin, DetailView):
+    queryset = Post.objects.filter(status=Post.STATUS_NORMAL)
+    template_name = 'blog/detail.html'
+    context_object_name = 'post'
+    pk_url_kwarg = 'post_id'

@@ -10,7 +10,7 @@ class Comment(models.Model):
         (STATUS_NORMAL, '正常'),
         (STATUS_DELETE, '删除'),
     )
-    target = models.ForeignKey(Post, verbose_name='目标评论')
+    target = models.ForeignKey(Post, verbose_name='目标评论', on_delete=models.CASCADE)
     content = models.CharField(max_length=2000, verbose_name="内容")
     email = models.EmailField(verbose_name='邮箱')
     website = models.URLField(verbose_name='网站地址')

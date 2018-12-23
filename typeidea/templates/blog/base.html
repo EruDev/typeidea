@@ -2,12 +2,12 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>{% block title %}{% endblock %} - typeidea 博客系统</title>
+    <title>{% block title %}首页{% endblock %} - typeidea 博客系统</title>
 </head>
 <body>
     <div>顶部分类:
-        {% for nav_cate in nav_cates %}
-            <a href="{% url 'category' nav_cate.id %}">{{ nav_cate.name }}</a>
+        {% for nav in navs %}
+            <a href="{% url 'category-list' nav.id %}">{{ nav.name }}</a>
         {% endfor %}
     </div>
     <hr>
@@ -17,15 +17,15 @@
     <hr>
 
     <div>底部分类:
-        {% for cate in cates %}
-            <a href="{% url 'category' cate.id %}">{{ cate.name }}</a>
+        {% for cate in categories %}
+            <a href="{% url 'category-list' cate.id %}">{{ cate.name }}</a>
         {% endfor %}
 
     </div>
     <hr>
 
     <div>侧边栏
-        {% for sidebar in recently_sidebars %}
+        {% for sidebar in sidebars %}
             <h4>{{ sidebar.title }}</h4>
             {{ sidebar.content }}
         {% endfor %}

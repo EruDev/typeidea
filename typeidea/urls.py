@@ -21,9 +21,9 @@ from blog.views import PostDetailView, IndexView, TagView, CategoryView
 
 urlpatterns = [
     url(r'^$', IndexView.as_view(), name='index'),
-    url(r'^tag/(?P<tag_id>\d+)/$', TagView.as_view(), name='tag-list'),
-    url(r'^category/(?P<category_id>\d+)/$', CategoryView.as_view(), name='category-list'),
-    url(r'^post/(?P<post_id>\d+)/$', PostDetailView.as_view(), name='post-detail'),
+    url(r'^tag/(?P<tag_id>\d+)/$', TagView.as_view(), name='tag'),
+    url(r'^category/(?P<category_id>\d+)/$', CategoryView.as_view(), name='category'),
+    url(r'^post/(?P<post_id>\d+)/$', PostDetailView.as_view(), name='detail'),
     url(r'^admin/', admin.site.urls),
     url(r'^cus_admin/', custom_site.urls)
 ]

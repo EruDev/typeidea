@@ -1,0 +1,8 @@
+<div class="comment">
+    <form class="form-group" action="/comment/" method="post">
+        <input type="hidden" value="{{ request.path }}" name="target">
+        {% csrf_token %}
+        {{ comment_form }}
+        <input type="submit" value="写好了!">
+    </form>
+</div>

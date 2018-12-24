@@ -30,11 +30,5 @@
     </article>
 </div>
 <hr>
-<div class="comment">
-    <form class="form-group" action="/comment/" method="post">
-        {% csrf_token %}
-        {{ comment_form }}
-        <input type="submit" value="写好了!">
-    </form>
-</div>
+{% include 'comment/block.html' %}
 {% endblock %}

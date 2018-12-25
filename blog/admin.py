@@ -57,7 +57,7 @@ class PostAdmin(BaseOwnerAdmin):
         ('内容', {
             'fields': (
                 'desc',
-                'content',
+                ('content', 'is_markdown'),
             )
         }),
         ('额外信息', {

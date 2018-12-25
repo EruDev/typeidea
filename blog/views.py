@@ -2,7 +2,7 @@ from django.views.generic import ListView, DetailView
 
 from comment.forms import CommentForm
 from comment.models import Comment
-from config.models import SideBar
+from config.models import SideBar, Link
 from .models import Post, Category, Tag
 
 
@@ -25,10 +25,12 @@ class CommonMixin:
         side_bars = SideBar.objects.filter(status=2)
         recently_posts = Post.objects.filter(status=1)[:10]
         recently_comments = Comment.objects.filter(status=1)[:10]
+        links = Link.objects.filter(status=1)
         kwargs.update({
             'side_bars': side_bars,
             'recently_comments': recently_comments,
-            'recently_posts': recently_posts
+            'recently_posts': recently_posts,
+            'links': links
         })
         kwargs.update(self.get_category_context())
         return super(CommonMixin, self).get_context_data(**kwargs)

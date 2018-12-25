@@ -1,4 +1,5 @@
 {% extends "./base.html" %}
+{% load static %}
 
 {% block content %}
 
@@ -26,9 +27,20 @@
         </nav>
     </div>
     <article class="content">
-        {{ post.content }}
+        {% autoescape off %}
+            {{ post.html }}
+        {% endautoescape %}
     </article>
 </div>
 <hr>
 {% include 'comment/block.html' %}
+{% endblock %}
+
+{% block scripts %}
+    <script src="{% static 'js/prettify.js' %}"></script>
+    <script>
+    window.onload = function () {
+        PR.prettyPrint();
+    }
+    </script>
 {% endblock %}

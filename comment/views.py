@@ -5,14 +5,14 @@ from .forms import CommentForm
 
 
 class CommentView(TemplateView):
+    http_method_names = ['post']
     template_name = 'comment/result.html'
 
     def post(self, request, *args, **kwargs):
         form = CommentForm(request.POST)
         target = request.POST['target']
         if form.is_valid():
-            instance = form.save(commit=False)
-            import pdb;pdb.set_trace()
+            instance = form.save()
             instance.target = target
             instance.save()
             succeed = True
@@ -22,6 +22,7 @@ class CommentView(TemplateView):
 
         context = {
             'succeed': succeed,
-            'form': form
+            'form': form,
+            'target': target
         }
         return self.render_to_response(context)

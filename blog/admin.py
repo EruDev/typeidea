@@ -36,7 +36,7 @@ class TagAdmin(BaseOwnerAdmin):
 @admin.register(Post, site=custom_site)
 class PostAdmin(BaseOwnerAdmin):
     form = PostAdminForm
-    list_display = ['title', 'category', 'status', 'owner', 'created_time']
+    list_display = ['title', 'category', 'status', 'owner', 'created_time', 'pv', 'uv']
     list_display_links = []
     search_fields = ('title', 'category__name')
     save_on_top = True
@@ -58,6 +58,8 @@ class PostAdmin(BaseOwnerAdmin):
             'fields': (
                 'desc',
                 ('content', 'is_markdown'),
+                'pv',
+                'uv'
             )
         }),
         ('额外信息', {

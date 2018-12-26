@@ -1,3 +1,5 @@
+from django.core.cache import cache
+from django.http import request
 from django.views.generic import ListView, DetailView
 
 from comment.forms import CommentForm
@@ -26,10 +28,12 @@ class CommonMixin:
         recently_posts = Post.objects.filter(status=1)[:10]
         recently_comments = Comment.objects.filter(status=1)[:10]
         links = Link.objects.filter(status=1)
+        hot_posts = Post.objects.filter(status=1).order_by('-pv')[:10]
         kwargs.update({
             'side_bars': side_bars,
             'recently_comments': recently_comments,
             'recently_posts': recently_posts,
+            'hot_posts': hot_posts,
             'links': links
         })
         kwargs.update(self.get_category_context())
@@ -87,3 +91,22 @@ class PostDetailView(CommonMixin, DetailView):
             'comment_form': CommentForm
         })
         return super(PostDetailView, self).get_context_data(**kwargs)
+
+    def get(self, request, *args, **kwargs):
+        response = super(PostDetailView, self).get(request, *args, **kwargs)
+        self.pv_uv()
+
+        return response
+
+    def pv_uv(self):
+        sessionid = self.request.COOKIES.get('sessionid')
+        pv_key = 'pv:%s:%s' % (sessionid, self.request.path)
+
+        if not cache.get(pv_key):
+            self.object.increase_pv()
+            cache.set(pv_key, 1, 30)
+
+        uv_key = 'uv:%s:%s' % (sessionid, self.request.path)
+        if not cache.get(uv_key):
+            self.object.increase_uv()
+            cache.set(uv_key, 1, 60 * 60 *24)

@@ -1,4 +1,5 @@
 from django.db import models
+from django.db.models import F
 import markdown
 from django.contrib.auth.models import User
 
@@ -63,6 +64,8 @@ class Post(models.Model):
     content = models.TextField(verbose_name='正文', help_text='正文必须为Markdown格式')
     status = models.PositiveIntegerField(default=STATUS_NORMAL, choices=STATUS_ITEMS, verbose_name='状态')
     created_time = models.DateTimeField(auto_now_add=True, verbose_name='发布时间')
+    pv = models.PositiveIntegerField(default=0, verbose_name='pv')
+    uv = models.PositiveIntegerField(default=0, verbose_name='uv')
 
     class Meta:
         ordering = ('-created_time',)
@@ -82,3 +85,9 @@ class Post(models.Model):
             }
             self.html = markdown.markdown(self.content, extensions=['codehilite'], extension_configs=config)
         return super(Post, self).save(*args, **kwargs)
+
+    def increase_pv(self):
+        return type(self).objects.filter(id=self.id).update(pv=F('pv') + 1)
+
+    def increase_uv(self):
+        return type(self).objects.filter(id=self.id).update(uv=F('uv') + 1)

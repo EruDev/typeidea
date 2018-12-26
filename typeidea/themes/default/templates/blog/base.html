@@ -57,13 +57,20 @@
                             {% for post in recently_posts %}
                                 <li><a href="{% url 'detail' post.id %}">{{ post.title }}</a></li>
                             {% endfor %}
+                            </ul>
+                            {% elif side.display_type == 3 %}
+                                <ul>
+                                {% for post in hot_posts %}
+                                    <li><a href="{% url 'detail' post.id %}">{{ post.title }} - {{ post.pv }}</a></li>
+                                {% endfor %}
+                                </ul>
+
                             {% elif side.display_type == 4 %}
                                 <ul>
                                     {% for comment in recently_comments %}
                                         <li>{{ comment.content }}</li>
                                     {% endfor %}
                                 </ul>
-                            </ul>
                             {% endif %}
                         </div>
                     </div>

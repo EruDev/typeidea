@@ -13,21 +13,24 @@ Including another URLconf
     1. Import the include() function: from django.conf.urls import url, include
     2. Add a URL to urlpatterns:  url(r'^blog/', include('blog.urls'))
 """
+import xadmin
+xadmin.autodiscover()
+from xadmin.plugins import xversion
 from django.conf.urls import url
 from django.contrib import admin
 
 from comment.views import CommentView
-from .custom_site import custom_site
 from blog.views import PostDetailView, IndexView, TagView, CategoryView
 from config.views import LinkView
+from typeidea import adminx
+
 
 urlpatterns = [
     url(r'^$', IndexView.as_view(), name='index'),
     url(r'^tag/(?P<tag_id>\d+)/$', TagView.as_view(), name='tag'),
     url(r'^category/(?P<category_id>\d+)/$', CategoryView.as_view(), name='category'),
     url(r'^post/(?P<post_id>\d+)/$', PostDetailView.as_view(), name='detail'),
-    url(r'^admin/', admin.site.urls),
+    url(r'^admin/', xadmin.site.urls),
     url(r'^links/', LinkView.as_view(), name='link'),
     url(r'^comment/', CommentView.as_view(), name='comment'),
-    url(r'^cus_admin/', custom_site.urls)
 ]

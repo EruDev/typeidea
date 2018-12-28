@@ -67,6 +67,10 @@ class Post(models.Model):
     pv = models.PositiveIntegerField(default=0, verbose_name='pv')
     uv = models.PositiveIntegerField(default=0, verbose_name='uv')
 
+    def status_show(self):
+        return '当前状态:%s' % self.status
+    status.short_description = '展示状态'
+
     class Meta:
         ordering = ('-created_time',)
         verbose_name = '文章'
